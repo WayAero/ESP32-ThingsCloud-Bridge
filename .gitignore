@@ -1,0 +1,13 @@
+.pio/
+.vscode/
+
+# PlatformIO build output
+.pioenvs/
+.piolibdeps/
+*.bin
+*.elf
+*.map
+
+# Local/editor files
+*.log
+*.tmp
