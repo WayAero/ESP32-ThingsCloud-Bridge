@@ -10,6 +10,37 @@ ESP32 侧桥接程序。它负责连接 Wi-Fi 和 ThingsCloud，通过 `Serial2`
 
 本仓库不包含真实 Wi-Fi 密码或 ThingsCloud 设备密钥。实际使用时请填写自己的设备参数，不要把真实凭据提交到公开仓库。
 
+## 开发环境
+
+本工程的已验证配置：
+
+| 项目 | 版本 / 配置 |
+| --- | --- |
+| 开发方式 | VS Code + PlatformIO |
+| PlatformIO 环境名 | `esp32dev` |
+| PlatformIO platform | `espressif32` |
+| 开发板 | `esp32dev` |
+| 框架 | Arduino |
+| 串口监视器 | `115200` |
+| DSP 串口 | `Serial2`, `9600 8N1` |
+| DSP RX/TX 引脚 | RX2=`GPIO16`, TX2=`GPIO17` |
+| ThingsCloud SDK | `thingscloud/ThingsCloud_ESP_SDK@^1.0.14` |
+| DHT 库 | `adafruit/DHT sensor library@^1.4.7` |
+
+`platformio.ini` 当前没有锁定 `espressif32` 的具体平台版本。复现时如果遇到库解析或编译差异，可以先使用 PlatformIO 默认解析版本；需要长期维护时，再把 `platform` 固定为明确版本。
+
+配套 DSP 工程：
+
+```text
+https://github.com/WayAero/PZ-DSP28335-ThingsCloud-Project
+```
+
+## Codex 辅助说明
+
+本项目开发过程中使用 Codex 辅助完成代码审查、串口链路问题定位、README 整理、Git 公开分支清理和隐私信息扫描。
+
+最终功能以实际硬件联调为准。涉及 Wi-Fi、ThingsCloud、串口接线和 GPIO 引脚时，请以自己的硬件环境重新核对。
+
 ## 功能
 
 - 读取 DHT22 温湿度。
@@ -173,6 +204,26 @@ alarm_clear
 DHT22 偶发读取失败时，只跳过本次温湿度上报。
 
 DSP 状态仍会继续解析和上报，避免因为一个传感器失败影响整条控制链路。
+
+## 复现建议
+
+建议按这个顺序测试：
+
+1. 先只烧录 ESP32，确认串口监视器正常输出日志。
+2. 填入自己的 Wi-Fi 和 ThingsCloud 参数，确认 MQTT 能连接。
+3. 确认 ThingsCloud 能看到 `temperature` 和 `humidity`。
+4. 再连接 DSP 到 `GPIO16/GPIO17`。
+5. 确认 ESP32 日志出现 `DSP -> ESP32`。
+6. 确认 ThingsCloud 出现 `adc_voltage` 和 DSP 状态字段。
+7. 从 ThingsCloud 下发 `{"led":1}`，确认 ESP32 日志出现 `ESP32 -> DSP`。
+8. 最后测试电机、继电器、蜂鸣器和 `alarm_clear`。
+
+常见问题：
+
+- ESP32 接 RX0/TX0 时，当前程序收不到 DSP 数据。
+- ThingsCloud 下发 JSON 不需要带换行。
+- DSP 串口需要换行，本程序转发时会自动追加。
+- DHT22 偶发读取失败不代表 DSP 桥接失败。
 
 ## 正常日志
 
