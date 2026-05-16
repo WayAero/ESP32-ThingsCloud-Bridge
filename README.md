@@ -189,4 +189,9 @@ MQTT >> [attributes/push] {"led":1}
 ESP32 -> DSP: {"led":1}
 ```
 
+## 隐私说明
+
+本仓库不包含真实 Wi-Fi 密码或 ThingsCloud 设备密钥。
+
+ESP32 工程中的 Wi-Fi 和 ThingsCloud 参数使用占位符。实际使用时需要在 ESP32 工程中填写自己的参数。
 
