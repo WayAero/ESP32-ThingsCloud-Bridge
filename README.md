@@ -189,8 +189,4 @@ MQTT >> [attributes/push] {"led":1}
 ESP32 -> DSP: {"led":1}
 ```
 
-## 隐私说明
 
-本仓库当前版本只保留占位凭据。
-
-上传公开仓库前，不要提交真实 Wi-Fi 名称、Wi-Fi 密码、ThingsCloud Token 或 Project Key。
